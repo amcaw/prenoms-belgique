@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="text-scale" content="scale" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="https://pym.nprapps.org/pym.v1.min.js"></script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+		<script>
+			var pymChild = new pym.Child({ polling: 500 });
+			function report() {
+				pymChild.sendHeight();
+			}
+			new MutationObserver(report).observe(document.body, {
+				attributes: true,
+				childList: true,
+				subtree: true
+			});
+			window.addEventListener('resize', report);
+			report();
+		</script>
+	</body>
+</html>
