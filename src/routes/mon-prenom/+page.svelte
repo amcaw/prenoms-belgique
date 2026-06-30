@@ -71,10 +71,10 @@
 	});
 
 	function topNameAt(g: Gender, i: number) {
-		if (!ds) return '—';
+		if (!ds) return '–';
 		let best: NameStat | null = null;
 		for (const s of ds.names) if (s.g === g && (!best || s.series.be[i] > best.series.be[i])) best = s;
-		return best ? best.n : '—';
+		return best ? best.n : '–';
 	}
 	function topListAt(g: Gender, i: number, k: number) {
 		if (!ds) return [] as { n: string; v: number; rank: number }[];
@@ -289,7 +289,7 @@
 	});
 </script>
 
-<svelte:head><title>Mon prénom en cartes — naissances en Belgique</title></svelte:head>
+<svelte:head><title>Mon prénom en cartes · naissances en Belgique</title></svelte:head>
 <svelte:window onkeydown={onKey} />
 
 <div class="paper" class:standalone style="--ink:{ink}">

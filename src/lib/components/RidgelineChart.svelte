@@ -136,7 +136,7 @@
 			{width}
 			{height}
 			role="img"
-			aria-label={`Prénoms les plus donnés — ${title}`}
+			aria-label={`Prénoms les plus donnés : ${title}`}
 			onpointermove={onMove}
 			onpointerdown={onMove}
 			onpointerleave={onLeave}

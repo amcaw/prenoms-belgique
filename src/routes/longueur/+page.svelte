@@ -112,7 +112,7 @@
 		</section>
 
 		<section>
-			<h3>Distribution des longueurs — {regionLabel}, {year}</h3>
+			<h3>Distribution des longueurs : {regionLabel}, {year}</h3>
 			<div class="distctl">
 				<RegionTabs regions={ds.meta.regions} value={region} onChange={(r) => (region = r)} />
 				<label class="year">

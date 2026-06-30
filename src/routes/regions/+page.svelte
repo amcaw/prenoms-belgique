@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import ChartSource from '$lib/components/ChartSource.svelte';
-	import { loadDataset, regionTotals, fmtInt, type Dataset, type Gender, type NameStat } from '$lib/data';
+	import { loadDataset, regionTotals, type Dataset, type Gender } from '$lib/data';
 
 	let ds = $state<Dataset | null>(null);
 	let loadError = $state<string | null>(null);
 	let gender = $state<Gender>('f');
-	let year = $state(0);
-	let playing = $state(false);
 
 	const COLS = [
 		{ key: 'fl' as const, label: 'Flandre', color: 'var(--series-4)' },
@@ -16,27 +14,6 @@
 	];
 
 	const years = $derived(ds ? ds.meta.years : []);
-	const yearIdx = $derived(years.length ? year - years[0] : 0);
-
-	$effect(() => {
-		if (!playing || !ds) return;
-		const ys = ds.meta.years;
-		const id = setInterval(() => {
-			const i = ys.indexOf(year);
-			year = ys[(i + 1) % ys.length];
-		}, 1000);
-		return () => clearInterval(id);
-	});
-
-	function topFor(region: 'fl' | 'wa' | 'br') {
-		if (!ds) return [];
-		const pool = ds.names.filter((s) => s.g === gender && s.series[region][yearIdx] > 0);
-		pool.sort((a, b) => b.series[region][yearIdx] - a.series[region][yearIdx]);
-		const top = pool.slice(0, 10);
-		const mx = top.length ? top[0].series[region][yearIdx] : 1;
-		return top.map((s) => ({ name: s.n, value: s.series[region][yearIdx], pct: (s.series[region][yearIdx] / mx) * 100 }));
-	}
-	const podiums = $derived(COLS.map((c) => ({ ...c, rows: topFor(c.key) })));
 
 	function mostRegional(region: 'fl' | 'wa' | 'br') {
 		if (!ds) return [];
@@ -55,7 +32,6 @@
 	onMount(async () => {
 		try {
 			ds = await loadDataset(fetch);
-			year = ds.meta.years.at(-1) ?? 0;
 		} catch (e) {
 			loadError = e instanceof Error ? e.message : 'Erreur de chargement';
 		}
@@ -66,8 +42,7 @@
 	<header>
 		<h1>Le grand écart régional</h1>
 		<p class="sub">
-			Flandre, Wallonie et Bruxelles ne donnent pas du tout les mêmes prénoms. Faites défiler les
-			années.
+			Flandre, Wallonie et Bruxelles ne donnent pas du tout les mêmes prénoms.
 		</p>
 	</header>
 
@@ -81,31 +56,6 @@
 				<button class="tab" class:active={gender === 'f'} onclick={() => (gender = 'f')}>Filles</button>
 				<button class="tab" class:active={gender === 'm'} onclick={() => (gender = 'm')}>Garçons</button>
 			</div>
-			<button class="play" onclick={() => (playing = !playing)} aria-label={playing ? 'Pause' : 'Lecture'}>
-				{playing ? '⏸' : '▶'}
-			</button>
-			<label class="year">
-				<span class="year-val">{year}</span>
-				<input type="range" min={years[0]} max={years.at(-1)} bind:value={year} />
-			</label>
-		</div>
-
-		<div class="cols">
-			{#each podiums as col (col.key)}
-				<section class="col">
-					<h2 style="color:{col.color}">{col.label}</h2>
-					<ol>
-						{#each col.rows as r, i (r.name)}
-							<li>
-								<span class="fill" style="width:{r.pct}%; background:{col.color}"></span>
-								<span class="rk">{i + 1}</span>
-								<span class="nm">{r.name}</span>
-								<span class="ct">{fmtInt(r.value)}</span>
-							</li>
-						{/each}
-					</ol>
-				</section>
-			{/each}
 		</div>
 
 		<h3 class="section">Les prénoms les plus régionaux ({years[0]}–{years.at(-1)})</h3>
@@ -187,33 +137,6 @@
 		background: var(--accent);
 		color: var(--accent-contrast);
 	}
-	.play {
-		flex: none;
-		width: 38px;
-		height: 38px;
-		border-radius: 50%;
-		border: none;
-		background: var(--accent);
-		color: var(--accent-contrast);
-		cursor: pointer;
-	}
-	.year {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		flex: 1;
-		min-width: 180px;
-	}
-	.year-val {
-		font-weight: 700;
-		font-variant-numeric: tabular-nums;
-		min-width: 3em;
-	}
-	input[type='range'] {
-		flex: 1;
-		accent-color: var(--accent);
-		cursor: pointer;
-	}
 	.cols {
 		display: grid;
 		grid-template-columns: 1fr;
@@ -247,23 +170,6 @@
 		border-radius: 7px;
 		overflow: hidden;
 		font-size: 0.85rem;
-	}
-	.fill {
-		position: absolute;
-		left: 0;
-		top: 0;
-		bottom: 0;
-		opacity: 0.18;
-		border-radius: 7px;
-		transition: width 0.5s ease;
-	}
-	.rk {
-		position: relative;
-		width: 1.4em;
-		text-align: right;
-		color: var(--text-muted);
-		font-variant-numeric: tabular-nums;
-		font-weight: 700;
 	}
 	.nm {
 		position: relative;

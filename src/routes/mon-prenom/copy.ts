@@ -61,7 +61,7 @@ export const copy = {
 		body: (a: { name: string; tops: string[]; count: number; year: number; masked: boolean; total: string; g: 'f' | 'm' }) =>
 			(a.tops.length === 1
 				? `C’est dans la ${hl(a.tops[0])} qu’il y a eu le plus de ${a.name} l'année dernière, avec ${hl(a.count)} naissances. `
-				: `${a.name} arrive en tête dans ${a.tops.length} provinces à égalité l'année dernière — ${a.tops.map((t) => hl(t)).join(', ')} — avec ${hl(a.count)} naissances chacune. `) +
+				: `${a.name} arrive en tête dans ${a.tops.length} provinces à égalité l'année dernière (${a.tops.map((t) => hl(t)).join(', ')}), avec ${hl(a.count)} naissances chacune. `) +
 			`${a.masked ? 'Les provinces sans chiffre en comptent moins de 5. ' : ''}` +
 			`Au total, ${hl(a.total)} ${a.g === 'f' ? 'petites' : 'petits'} ${a.name} sont né${a.g === 'f' ? 'es' : 's'} en Belgique en ${a.year}.`,
 		rare: (name: string, year: number) => `${name} reste trop rare pour apparaître par province (données 2017–${year}).`
@@ -82,7 +82,7 @@ export const copy = {
 		pos: (year: number, name: string, rank: number | null, genderLabel: string) =>
 			rank
 				? `En ${year}, ${name} est ${rank}ᵉ au classement des ${genderLabel} du pays.`
-				: `En ${year}, ${name} compte moins de 5 naissances — sorti des radars.`
+				: `En ${year}, ${name} compte moins de 5 naissances, sorti des radars.`
 	},
 
 	mixte: {

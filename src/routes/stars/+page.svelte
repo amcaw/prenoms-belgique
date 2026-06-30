@@ -19,18 +19,18 @@
 		{ name: 'Eden', g: 'm', year: 2018, cat: 'Sport', scope: 'be', label: 'Eden Hazard', note: 'Le prénom culmine en 2018, l’année du Mondial où Hazard porte les Diables rouges jusqu’à la 3ᵉ place.' },
 		{ name: 'Roméo', g: 'm', year: 2017, cat: 'Musique', scope: 'be', label: 'Roméo Elvis', note: 'Le prénom remonte dans les années 2010, au rythme de la carrière du rappeur bruxellois.' },
 		{ name: 'Rihanna', g: 'f', year: 2008, cat: 'Musique', scope: 'int', label: 'Rihanna', note: 'Le sommet tombe pile en 2008, au zénith de la chanteuse et de « Umbrella ».' },
-		{ name: 'Arya', g: 'f', year: 2019, cat: 'Séries', scope: 'int', label: 'Game of Thrones', note: 'La cadette Stark fait grimper le prénom tout au long de la série (2011-2019) — et il continue de monter ensuite.' },
+		{ name: 'Arya', g: 'f', year: 2019, cat: 'Séries', scope: 'int', label: 'Game of Thrones', note: 'La cadette Stark fait grimper le prénom tout au long de la série (2011-2019), et il continue de monter ensuite.' },
 		{ name: 'Elsa', g: 'f', year: 2014, cat: 'Cinéma', scope: 'int', label: 'La Reine des neiges', note: 'Rebond net juste après la sortie de Frozen, fin 2013.' },
 		{ name: 'Logan', g: 'm', year: 2000, cat: 'Cinéma', scope: 'int', label: 'X-Men', note: 'Bond en 2000, l’année où le premier X-Men met Logan / Wolverine à l’affiche.' },
 		{ name: 'Arwen', g: 'f', year: 2003, cat: 'Cinéma', scope: 'int', label: 'Le Seigneur des anneaux', note: 'Inexistant avant la trilogie de Peter Jackson (2001-2003), ce prénom elfique apparaît pile à sa sortie, puis reflue.' },
 		{ name: 'Anakin', g: 'm', year: 2005, cat: 'Cinéma', scope: 'int', label: 'Star Wars', note: 'Quelques dizaines d’Anakin au fil des préquelles : un prénom qui n’existe presque que par la fiction.' },
 		{ name: 'Alizée', g: 'f', year: 2000, cat: 'Musique', scope: 'int', label: 'Alizée', note: 'La chanteuse explose avec « Moi… Lolita » (2000) : le prénom bondit dans la foulée, surtout côté francophone, puis redescend.' },
-		{ name: 'Lorie', g: 'f', year: 2001, cat: 'Musique', scope: 'int', label: 'Lorie', note: 'La pop star ado française fait surgir le prénom au début des années 2000 — un phénomène 100 % francophone.' },
+		{ name: 'Lorie', g: 'f', year: 2001, cat: 'Musique', scope: 'int', label: 'Lorie', note: 'La pop star ado française fait surgir le prénom au début des années 2000, un phénomène 100 % francophone.' },
 		{ name: 'Nolwenn', g: 'f', year: 2002, cat: 'Télé-crochet', scope: 'int', label: 'Nolwenn Leroy', note: 'Pic net en 2003, juste après sa victoire à la Star Academy, puis chute presque aussitôt.' },
 		{ name: 'Lauryn', g: 'f', year: 1999, cat: 'Musique', scope: 'int', label: 'Lauryn Hill', note: 'Sommet vers 2000, dans la foulée de « The Miseducation of Lauryn Hill » et de ses Grammys.' },
 		{ name: 'Witse', g: 'm', year: 2004, cat: 'Séries', scope: 'be', label: 'Witse (VRT)', note: 'Apparaît avec la série policière flamande « Witse » (2004-2012) : un phénomène exclusivement néerlandophone.' },
 		{ name: 'Britney', g: 'f', year: 1999, cat: 'Musique', scope: 'int', label: 'Britney Spears', note: 'Surgit avec « …Baby One More Time » (1999), surtout en Flandre.' },
-		{ name: 'Shakira', g: 'f', year: 2001, cat: 'Musique', scope: 'int', label: 'Shakira', note: 'Inexistant avant 2002, le prénom apparaît avec la percée internationale de la chanteuse — quasi uniquement en Flandre.' }
+		{ name: 'Shakira', g: 'f', year: 2001, cat: 'Musique', scope: 'int', label: 'Shakira', note: 'Inexistant avant 2002, le prénom apparaît avec la percée internationale de la chanteuse, quasi uniquement en Flandre.' }
 	];
 
 	const RARE = [
@@ -99,14 +99,14 @@
 	});
 </script>
 
-<svelte:head><title>Stars & fictions — les prénoms qui trahissent une époque</title></svelte:head>
+<svelte:head><title>Stars & fictions : les prénoms qui trahissent une époque</title></svelte:head>
 
 <div class="page">
 	<header>
 		<h1>Stars & fictions</h1>
 		<p class="sub">
 			Certains prénoms portent la trace d’un film, d’une série ou d’une célébrité. Leur courbe s’allume
-			pile à l’événement — la ligne pointillée marque l’année. Vue <b>Belgique</b> par défaut ;
+			pile à l’événement ; la ligne pointillée marque l’année. Vue <b>Belgique</b> par défaut ;
 			basculez sur une communauté pour voir la même star à travers son public. Le badge rappelle où le
 			prénom a surtout pris.
 		</p>
@@ -153,7 +153,7 @@
 			<p class="rare-cap">
 				D’autres icônes n’ont quasiment jamais réuni 5 bébés la même année : Statbel ne les publie donc
 				pas (ou à peine). Côté Harry Potter, par exemple, aucun prénom n’a vraiment pris en Belgique.
-				Leur quasi-absence des chiffres ne veut pas dire que personne ne les a portés — seulement
+				Leur quasi-absence des chiffres ne veut pas dire que personne ne les a portés, seulement
 				qu’ils sont restés sous le seuil.
 			</p>
 			<div class="chips">

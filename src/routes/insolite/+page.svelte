@@ -82,7 +82,7 @@
 <div class="page">
 	<header>
 		<h1>Insolite</h1>
-		<p class="sub">Feux de paille, prénoms mixtes et bonds spectaculaires — par région.</p>
+		<p class="sub">Feux de paille, prénoms mixtes et bonds spectaculaires, par région.</p>
 	</header>
 
 	{#if loadError}
@@ -93,7 +93,7 @@
 		<RegionTabs regions={ds.meta.regions} value={region} onChange={(r) => (region = r)} />
 
 		<section class="block">
-			<h3>Les feux de paille 🎆</h3>
+			<h3>Les feux de paille</h3>
 			<p class="cap">Prénoms qui ont explosé sur quelques années avant de retomber.</p>
 			<ul>
 				{#each feux as f (f.s.id)}
@@ -110,7 +110,7 @@
 		</section>
 
 		<section class="block">
-			<h3>Les prénoms les plus mixtes ⚧</h3>
+			<h3>Les prénoms les plus mixtes</h3>
 			<p class="cap">Donnés presque autant aux filles qu'aux garçons.</p>
 			<ul>
 				{#each mixtes as m (m.name)}
@@ -126,7 +126,7 @@
 		</section>
 
 		<section class="block">
-			<h3>Les plus gros bonds 🚀</h3>
+			<h3>Les plus gros bonds</h3>
 			<p class="cap">Plus forte hausse en une seule année.</p>
 			<ul>
 				{#each bonds as b (b.s.id)}

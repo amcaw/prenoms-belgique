@@ -128,7 +128,7 @@
 				<div class="v-stats">
 					<div><b>{years[info.peak.idx]}</b><span>année record</span></div>
 					<div><b>{fmtInt(active.t)}</b><span>depuis {years[0]}</span></div>
-					<div><b>{info.bestRank ? `#${info.bestRank}` : '—'}</b><span>meilleur rang</span></div>
+					<div><b>{info.bestRank ? `#${info.bestRank}` : '–'}</b><span>meilleur rang</span></div>
 					<div><b>~{Math.round(info.meanAge)} ans</b><span>âge moyen</span></div>
 				</div>
 			</section>

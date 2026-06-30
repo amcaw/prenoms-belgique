@@ -2,6 +2,8 @@
 	import { scaleLinear } from 'd3-scale';
 	import { line, curveMonotoneX } from 'd3-shape';
 	import { max } from 'd3-array';
+	import { Tween } from 'svelte/motion';
+	import { cubicOut } from 'svelte/easing';
 	import { fmtInt } from '$lib/data';
 	import type { Gender } from '$lib/data';
 	import ChartTooltip from './ChartTooltip.svelte';
@@ -15,7 +17,12 @@
 		ranks: (number | null)[];
 	}
 
-	let { series, years }: { series: ChartSeries[]; years: number[] } = $props();
+	let {
+		series,
+		years,
+		exporting = false,
+		logo = ''
+	}: { series: ChartSeries[]; years: number[]; exporting?: boolean; logo?: string } = $props();
 
 	let width = $state(0);
 	let height = $state(0);
@@ -27,7 +34,27 @@
 	const rightPad = $derived(
 		series.length ? Math.min(220, Math.max(56, longest(series) * 8.4 + 16)) : 14
 	);
-	const margin = $derived({ top: 18, right: rightPad, bottom: 26, left: 46 });
+	const margin = $derived({ top: exporting ? 96 : 18, right: rightPad, bottom: exporting ? 96 : 26, left: 46 });
+
+	const titleSegs = $derived.by(() => {
+		if (!exporting || !series.length) return [] as { t: string; c: string | null }[];
+		const out: { t: string; c: string | null }[] = [];
+		if (series.length === 1) {
+			out.push({ t: 'Évolution du prénom ', c: null });
+			out.push({ t: series[0].name, c: series[0].color });
+		} else {
+			out.push({ t: 'Évolution des prénoms ', c: null });
+			series.forEach((s, i) => {
+				out.push({ t: s.name, c: s.color });
+				if (i < series.length - 2) out.push({ t: ', ', c: null });
+				else if (i === series.length - 2) out.push({ t: ' et ', c: null });
+			});
+		}
+		out.push({ t: ` entre ${years[0]} et ${years[years.length - 1]}`, c: null });
+		return out;
+	});
+	const titleLen = $derived(titleSegs.reduce((n, s) => n + s.t.length, 0));
+	const titleFont = $derived(Math.max(17, Math.min(34, 980 / (titleLen * 0.56))));
 
 	const innerW = $derived(Math.max(0, width - margin.left - margin.right));
 	const innerH = $derived(Math.max(0, height - margin.top - margin.bottom));
@@ -38,8 +65,17 @@
 			.range([0, innerW])
 	);
 
-	const yMax = $derived(series.length ? (max(series, (s) => max(s.values)) ?? 10) : 100);
-	const y = $derived(scaleLinear().domain([0, yMax]).range([innerH, 0]).nice());
+	const reduceMotion =
+		typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const yMaxTarget = $derived(series.length ? (max(series, (s) => max(s.values)) ?? 10) : 100);
+	const niceMax = $derived(scaleLinear().domain([0, yMaxTarget]).nice().domain()[1]);
+	const yTween = new Tween(100, { duration: reduceMotion ? 0 : 600, easing: cubicOut });
+	let yReady = false;
+	$effect(() => {
+		yTween.set(niceMax, yReady ? undefined : { duration: 0 });
+		yReady = true;
+	});
+	const y = $derived(scaleLinear().domain([0, yTween.current || 1]).range([innerH, 0]));
 
 	const lineGen = $derived(
 		line<number>()
@@ -51,7 +87,11 @@
 	const paths = $derived(series.map((s) => ({ ...s, d: lineGen(s.values) ?? '' })));
 
 	const xTicks = $derived(years.filter((yr, i) => yr % 5 === 0 || i === years.length - 1));
-	const yTicks = $derived(series.length ? y.ticks(5).filter((t) => Number.isInteger(t)) : []);
+	const yTicks = $derived(
+		series.length
+			? scaleLinear().domain([0, niceMax]).range([innerH, 0]).ticks(5).filter((t) => Number.isInteger(t))
+			: []
+	);
 
 	const endLabels = $derived.by(() => {
 		if (!series.length || innerH <= 0) return [];
@@ -177,6 +217,23 @@
 					</text>
 				{/each}
 			</g>
+
+			{#if exporting && series.length}
+				<text class="exp-title" x={width / 2} y="54" text-anchor="middle" font-size={titleFont}>
+					{#each titleSegs as seg, i (i)}<tspan fill={seg.c ?? undefined}>{seg.t}</tspan>{/each}
+				</text>
+				<text class="exp-src" x={margin.left} y={height - 24}>Source : Statbel</text>
+				{#if logo}
+					<image
+						href={logo}
+						x={width - 136}
+						y={height - 46}
+						width="120"
+						height="31"
+						preserveAspectRatio="xMaxYMid meet"
+					/>
+				{/if}
+			{/if}
 		</svg>
 	{/if}
 
@@ -237,7 +294,6 @@
 		stroke-width: 2.5;
 		stroke-linejoin: round;
 		stroke-linecap: round;
-		transition: d 0.6s ease;
 	}
 	.crosshair {
 		stroke: var(--border-strong);
@@ -256,6 +312,17 @@
 		font-size: 12px;
 		font-weight: 600;
 		text-anchor: start;
+	}
+	.exp-title {
+		fill: var(--text);
+		font-family: var(--font);
+		font-weight: 700;
+	}
+	.exp-src {
+		fill: var(--text-secondary);
+		font-family: var(--font);
+		font-size: 16px;
+		font-weight: 600;
 	}
 
 	.empty {

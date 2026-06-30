@@ -78,7 +78,7 @@
 				labels[pp.nuts] = top;
 				tip[pp.nuts] = {
 					title: pp.label,
-					lines: pp.entries.slice(0, 3).map(([n, c], i) => `${i + 1}. ${n} — ${fmtInt(c)}`)
+					lines: pp.entries.slice(0, 3).map(([n, c], i) => `${i + 1}. ${n} · ${fmtInt(c)}`)
 				};
 			}
 			for (const [name, count] of distinct) legend.push({ name, color: color.get(name)!, count });
@@ -90,18 +90,16 @@
 			const cells = prov.meta.provinces.map((p) => {
 				const cell = yObj[p.nuts];
 				const count = cell?.names[active!.n] ?? 0;
-				const total = cell?.total ?? 0;
-				const rate = total ? (count / total) * 1000 : 0;
-				max = Math.max(max, rate);
-				return { nuts: p.nuts, label: short(p.label), count, rate };
+				max = Math.max(max, count);
+				return { nuts: p.nuts, label: short(p.label), count };
 			});
 			for (const c of cells) {
-				const t = max > 0 ? c.rate / max : 0;
+				const t = max > 0 ? c.count / max : 0;
 				fills[c.nuts] = `color-mix(in srgb, var(--accent) ${Math.round(t * 100)}%, var(--surface-2))`;
 				labels[c.nuts] = c.count > 0 ? fmtInt(c.count) : '';
 				tip[c.nuts] = {
 					title: c.label,
-					lines: [`${c.count > 0 ? fmtInt(c.count) : '< 5'} naissances`, `${c.rate.toFixed(1)} ‰`]
+					lines: [`${c.count > 0 ? fmtInt(c.count) : '< 5'} naissances`]
 				};
 			}
 		}
@@ -130,7 +128,7 @@
 	<header>
 		<h1>La Belgique des prénoms</h1>
 		<p class="sub">
-			Le prénom n°1 de chaque province, ou la carte d'un prénom{#if prov} ({prov.meta.years[0]}–{prov.meta.years.at(-1)}){/if}.
+			Le prénom n°1 de chaque province, ou la carte d'un prénom {#if prov}({prov.meta.years[0]}–{prov.meta.years.at(-1)}){/if}.
 		</p>
 	</header>
 
@@ -166,7 +164,7 @@
 			<div class="title-row">
 				<span class="dot {active.g}"></span>
 				<span class="aname">{active.n}</span>
-				<span class="ameta">{genderLabel(active.g)} · pour 1 000 naissances</span>
+				<span class="ameta">{genderLabel(active.g)} · naissances en {year}</span>
 			</div>
 		{/if}
 
@@ -174,19 +172,11 @@
 			<MapChart {geo} fills={view.fills} labels={view.labels} tip={view.tip} />
 		</section>
 
-		{#if mode === 'top'}
-			<div class="legend">
-				{#each view.legend as l (l.name)}
-					<span class="chip">
-						<span class="sw" style="background:{l.color}"></span>{l.name}<span class="n">{l.count}</span>
-					</span>
-				{/each}
-			</div>
-		{:else}
+		{#if mode === 'name'}
 			<div class="grad">
 				<span class="cap">0</span>
 				<span class="bar"></span>
-				<span class="cap">{view.max.toFixed(1)} ‰</span>
+				<span class="cap">{fmtInt(view.max)}</span>
 			</div>
 		{/if}
 

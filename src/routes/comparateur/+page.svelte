@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
+	import { base } from '$app/paths';
 	import ChartSource from '$lib/components/ChartSource.svelte';
 	import { loadDataset, idOf, type Dataset, type NameStat, type RegionKey } from '$lib/data';
 	import { colorForIndex, freeColorSlot, textOn } from '$lib/colors';
@@ -12,7 +13,19 @@
 
 	let chartPaneEl = $state<HTMLElement>();
 	let saving = $state(false);
+	let exporting = $state(false);
+	let logoUri = $state('');
 	const embedded = typeof window !== 'undefined' && window.self !== window.top;
+
+	async function loadLogo() {
+		if (logoUri) return;
+		try {
+			const txt = await fetch(`${base}/rtbf-actus.svg`).then((r) => r.text());
+			logoUri = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(txt)))}`;
+		} catch {
+			logoUri = '';
+		}
+	}
 
 	let ds = $state<Dataset | null>(null);
 	let loadError = $state<string | null>(null);
@@ -63,6 +76,9 @@
 		if (!chartPaneEl || saving || !selected.length) return;
 		saving = true;
 		try {
+			await loadLogo();
+			exporting = true;
+			await tick();
 			const bg = getComputedStyle(chartPaneEl).backgroundColor;
 			await exportSquareFromContainer(chartPaneEl, {
 				filename: `prenoms-${selected.map((s) => s.stat.n).join('-') || 'comparateur'}`,
@@ -70,6 +86,7 @@
 				fonts: [{ family: 'Montserrat', weights: ['400', '600', '700'] }]
 			});
 		} finally {
+			exporting = false;
 			saving = false;
 		}
 	}
@@ -135,13 +152,13 @@
 			<section class="pane cloud">
 				<NameCloud {ds} {colorFor} onToggle={toggle} />
 			</section>
-			<section class="pane chart" bind:this={chartPaneEl}>
+			<section class="pane chart" class:export-light={exporting} bind:this={chartPaneEl}>
 				{#if selected.length}
 					<button class="save-btn" onclick={saveJpg} disabled={saving} aria-label="Enregistrer le graphique en JPG">
 						{saving ? '…' : '⤓ JPG'}
 					</button>
 				{/if}
-				<TrendChart series={chartSeries} years={ds.meta.years} />
+				<TrendChart series={chartSeries} years={ds.meta.years} {exporting} logo={logoUri} />
 			</section>
 		</div>
 
@@ -272,6 +289,16 @@
 		border: 1px solid var(--border);
 		border-radius: 14px;
 		padding: 10px 8px 6px;
+	}
+	.pane.chart.export-light {
+		--surface: #ffffff;
+		--text: #2e3238;
+		--text-secondary: rgba(46, 50, 56, 0.72);
+		--text-muted: rgba(46, 50, 56, 0.5);
+		--divider: rgba(0, 0, 0, 0.07);
+		--border: rgba(0, 0, 0, 0.12);
+		--border-strong: rgba(0, 0, 0, 0.2);
+		background: #ffffff;
 	}
 	.save-btn {
 		position: absolute;
