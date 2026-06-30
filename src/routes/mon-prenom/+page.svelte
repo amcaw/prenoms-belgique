@@ -35,6 +35,7 @@
 	let idx = $state(0);
 	let shareMsg = $state('');
 	let chosenG = $state<Gender | null>(null);
+	let standalone = $state(false);
 
 	const years = $derived(ds ? ds.meta.years : []);
 	const q = $derived(normalize(query));
@@ -250,12 +251,21 @@
 		if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
 		else if (e.key === 'ArrowLeft') prev();
 	}
+	let tsX = 0, tsY = 0, swiped = false;
+	function onTouchStart(e: TouchEvent) { const t = e.changedTouches[0]; tsX = t.clientX; tsY = t.clientY; swiped = false; }
+	function onTouchEnd(e: TouchEvent) {
+		const t = e.changedTouches[0];
+		const dx = t.clientX - tsX, dy = t.clientY - tsY;
+		if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) { swiped = true; if (dx < 0) next(); else prev(); }
+	}
+	function zoneTap(go: () => void) { if (swiped) { swiped = false; return; } go(); }
 	function copyLink() {
 		if (!shareUrl) return;
 		navigator.clipboard.writeText(shareUrl).then(() => { shareMsg = copy.share.copied; }).catch(() => { shareMsg = shareUrl; });
 	}
 
 	onMount(async () => {
+		standalone = typeof window !== 'undefined' && window.self === window.top;
 		try {
 			const [d, p, g] = await Promise.all([
 				loadDataset(fetch),
@@ -282,19 +292,19 @@
 <svelte:head><title>Mon prénom en cartes — naissances en Belgique</title></svelte:head>
 <svelte:window onkeydown={onKey} />
 
-<div class="paper" style="--ink:{ink}">
+<div class="paper" class:standalone style="--ink:{ink}">
 	{#if loadError}
 		<p class="msg">Impossible de charger les données : {loadError}</p>
 	{:else if !ds}
 		<p class="msg">Chargement…</p>
 	{:else if cur}
-		<div class="shell">
+		<div class="shell" role="group" aria-label="Story du prénom" ontouchstart={onTouchStart} ontouchend={onTouchEnd}>
 			<div class="bars">
 				{#each cards as _, i (i)}<span class="bar"><span class="fill" class:on={i <= idx}></span></span>{/each}
 			</div>
 			<span class="dots">{idx + 1} / {cards.length}</span>
-			<button class="zone left" onclick={prev} aria-label="Carte précédente"></button>
-			<button class="zone right" onclick={next} aria-label="Carte suivante"></button>
+			<button class="zone left" onclick={() => zoneTap(prev)} aria-label="Carte précédente"></button>
+			<button class="zone right" onclick={() => zoneTap(next)} aria-label="Carte suivante"></button>
 			{#if idx > 0}<button class="chev prev" onclick={prev} aria-label="Précédent"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7" /></svg></button>{/if}
 			{#if idx < cards.length - 1}<button class="chev next" onclick={next} aria-label="Suivant"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7" /></svg></button>{/if}
 
@@ -463,6 +473,12 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
+		touch-action: pan-y;
+	}
+	.paper.standalone { min-height: 100vh; min-height: 100dvh; align-items: center; }
+	@media (max-width: 600px) {
+		.paper.standalone { padding: 0; align-items: stretch; }
+		.paper.standalone .shell { width: 100%; max-width: none; min-height: 100vh; min-height: 100dvh; border: none; border-radius: 0; box-shadow: none; }
 	}
 	.bars { display: flex; gap: 4px; padding: 12px 14px 0; z-index: 3; }
 	.bar { flex: 1; height: 2px; background: rgba(0, 0, 0, 0.12); overflow: hidden; }
