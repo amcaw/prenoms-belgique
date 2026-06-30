@@ -164,7 +164,6 @@
 				maxlength="20"
 				aria-label="Tapez un prénom"
 				oninput={() => (open = true)}
-				onfocus={() => (open = true)}
 				onblur={() => setTimeout(() => (open = false), 120)}
 				onkeydown={onKey}
 			/>

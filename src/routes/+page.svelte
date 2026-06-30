@@ -18,6 +18,11 @@
 
 	const routes = [
 		{
+			href: '/mon-prenom',
+			title: 'Mon prénom en 6 cartes',
+			desc: 'Entrez votre prénom : une story interactive vous raconte son histoire, sa région, sa génération.'
+		},
+		{
 			href: '/comparateur',
 			title: 'Comparateur de prénoms',
 			desc: "Cherchez n'importe quel prénom et comparez l'évolution des naissances depuis 1995, par région."

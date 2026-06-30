@@ -118,9 +118,9 @@
 		<p class="loading">Chargement des données…</p>
 	{:else}
 		<div class="tabs">
-			<button class="tab" class:active={view === 'be'} onclick={() => (view = 'be')}>🇧🇪 Belgique</button>
-			<button class="tab" class:active={view === 'fr'} onclick={() => (view = 'fr')}>🇫🇷 Francophone</button>
-			<button class="tab" class:active={view === 'nl'} onclick={() => (view = 'nl')}>🇳🇱 Néerlandophone</button>
+			<button class="tab" class:active={view === 'be'} onclick={() => (view = 'be')}>Belgique</button>
+			<button class="tab" class:active={view === 'fr'} onclick={() => (view = 'fr')}>Francophone</button>
+			<button class="tab" class:active={view === 'nl'} onclick={() => (view = 'nl')}>Néerlandophone</button>
 		</div>
 
 		<div class="grid">
@@ -129,9 +129,9 @@
 					<div class="top">
 						<span class="nm"><span class="dot {c.g}"></span>{c.name}</span>
 						<span class="comm {c.community.key}">
-							{#if c.community.key === 'nl'}🇳🇱 Néerlandophone · {c.community.pct}%
-							{:else if c.community.key === 'fr'}🇫🇷 Francophone · {c.community.pct}%
-							{:else}🌍 Les deux{/if}
+							{#if c.community.key === 'nl'}Néerlandophone · {c.community.pct}%
+							{:else if c.community.key === 'fr'}Francophone · {c.community.pct}%
+							{:else}Les deux{/if}
 						</span>
 					</div>
 					<div class="label">{c.cat} · {c.label} · {c.year}</div>

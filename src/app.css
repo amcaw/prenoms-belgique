@@ -22,8 +22,8 @@
 	--positive-soft: rgba(78, 203, 113, 0.18);
 	--negative-soft: rgba(255, 107, 107, 0.18);
 
-	--gender-f: #ec4899;
-	--gender-m: #38bdf8;
+	--gender-f: #c3a0e0;
+	--gender-m: #d3bd99;
 
 	--series-0: #ef4444;
 	--series-1: #10b981;
@@ -59,6 +59,9 @@
 
 		--positive: #1a7a3c;
 		--negative: #c0392b;
+
+		--gender-f: #835aa6;
+		--gender-m: #8a7150;
 	}
 }
 

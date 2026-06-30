@@ -81,7 +81,7 @@
 			{#if mark !== null && mark >= 0 && mark < values.length}
 				<line x1={x(mark)} x2={x(mark)} y1="0" y2={h} stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2 2" vector-effect="non-scaling-stroke" />
 			{/if}
-			<path d={ln} fill="none" stroke={color} stroke-width="1.5" />
+			<path class="ln" d={ln} pathLength="1" fill="none" stroke={color} stroke-width="1.5" />
 			{#if hoverIdx !== null}
 				<line x1={x(hoverIdx)} x2={x(hoverIdx)} y1="0" y2={h} stroke="var(--border-strong)" stroke-width="1" vector-effect="non-scaling-stroke" />
 			{/if}
