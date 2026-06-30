@@ -274,7 +274,7 @@
 		border: 1.5px solid rgba(255, 255, 255, 0.55);
 		border-radius: 999px;
 		color: var(--accent-contrast);
-		font: 600 0.95rem var(--font);
+		font: 600 16px var(--font);
 		text-align: center;
 		outline: none;
 	}
