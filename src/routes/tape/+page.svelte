@@ -26,6 +26,7 @@
 	let saving = $state(false);
 	let width = $state(0);
 	let height = $state(0);
+	const embedded = typeof window !== 'undefined' && window.self !== window.top;
 
 	const years = $derived(ds ? ds.meta.years : []);
 	const q = $derived(normalize(query));
@@ -145,7 +146,7 @@
 	});
 </script>
 
-<div class="panel">
+<div class="panel" class:embedded>
 	<div class="topbar">
 		{#if ds}
 			<button class="save" onclick={saveJpg} disabled={saving || !match} aria-label="Enregistrer en JPG">
@@ -246,6 +247,10 @@
 		background: var(--accent);
 		color: var(--accent-contrast);
 		overflow: hidden;
+	}
+	.panel.embedded {
+		height: 600px;
+		min-height: 0;
 	}
 	.topbar {
 		position: relative;

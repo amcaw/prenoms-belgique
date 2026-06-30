@@ -12,6 +12,7 @@
 
 	let chartPaneEl = $state<HTMLElement>();
 	let saving = $state(false);
+	const embedded = typeof window !== 'undefined' && window.self !== window.top;
 
 	let ds = $state<Dataset | null>(null);
 	let loadError = $state<string | null>(null);
@@ -86,12 +87,13 @@
 	});
 </script>
 
-<div class="widget">
+<div class="widget" class:embedded>
 	<header>
 		<h1>Comparateur de prénoms</h1>
 		{#if ds}
 			<p class="sub">
-				Cherchez un prénom ou piochez dans le nuage, puis comparez l'évolution des naissances.
+				<span class="no-cloud">Cherchez un prénom, puis comparez l'évolution des naissances.</span><span
+					class="with-cloud">Cherchez un prénom ou piochez dans le nuage, puis comparez l'évolution des naissances.</span>
 			</p>
 		{/if}
 	</header>
@@ -157,6 +159,10 @@
 		height: 100dvh;
 		min-height: 600px;
 		overflow: hidden;
+	}
+	.widget.embedded {
+		height: 640px;
+		min-height: 0;
 	}
 
 	header {
@@ -257,6 +263,9 @@
 	.pane.cloud {
 		display: none;
 	}
+	.with-cloud {
+		display: none;
+	}
 	.pane.chart {
 		position: relative;
 		background: var(--surface);
@@ -301,6 +310,12 @@
 		}
 		.pane.cloud {
 			display: flex;
+		}
+		.with-cloud {
+			display: inline;
+		}
+		.no-cloud {
+			display: none;
 		}
 	}
 </style>
