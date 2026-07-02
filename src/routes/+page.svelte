@@ -4,7 +4,7 @@
 	import { loadMeta } from '$lib/data';
 
 	let first = $state(1995);
-	let last = $state(2024);
+	let last = $state(2025);
 
 	onMount(async () => {
 		try {
